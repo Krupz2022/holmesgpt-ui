@@ -13,6 +13,60 @@ const maxChars = 4500; // guardrail for combined prompt length
 // History: array of { role: "user"|"ai", text: string }, oldest -> newest
 let history = [];
 
+//getting sessionid
+function getSessionId() {
+  let id = localStorage.getItem("sessionId");
+  if (!id) {
+    id = (crypto.randomUUID && crypto.randomUUID()) || (Date.now() + "-" + Math.random().toString(36).slice(2));
+    localStorage.setItem("sessionId", id);
+  }
+  return id;
+}
+const sessionId = getSessionId();
+
+function getTurn() {
+  const k = `turn:${sessionId}`;
+  const v = parseInt(localStorage.getItem(k) || "0", 10);
+  return isNaN(v) ? 0 : v;
+}
+function bumpTurn() {
+  const k = `turn:${sessionId}`;
+  localStorage.setItem(k, String(getTurn() + 1));
+}
+
+async function sendLatestTurn() {
+
+  if (history.length < 2) return;
+
+  const [m1, m2] = history.slice(-2);
+
+  if (!(m1.role === "user" && m2.role === "ai")) {
+    return;
+  }
+
+  const nowISO = new Date().toISOString();
+  const payload = {
+    sessionId,
+    turn: getTurn() + 1, // 1-based index per exchange
+    messages: [
+      { role: m1.role, text: m1.text, ts: nowISO },
+      { role: m2.role, text: m2.text, ts: nowISO },
+    ],
+  };
+
+  try {
+    await fetch("http://localhost:8000/history", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    });
+    bumpTurn();
+  } catch {
+    
+  }
+}
+
 // UI helpers
 function addMessage(text, who) {
   const div = document.createElement("div");
@@ -74,10 +128,9 @@ function pushUserAndAi(userText, aiText) {
   history.push({ role: "user", text: userText });
   history.push({ role: "ai", text: aiText });
 
-  // Trim oldest entries if we exceed allowed messages
-  while (history.length > maxMessages) {
-    history.shift();
-  }
+  while (history.length > maxMessages) history.shift();
+
+  sendLatestTurn(); 
 }
 
 // Networking + UI flow
@@ -99,7 +152,7 @@ async function sendPrompt() {
     sendBtn.disabled = true;
     promptInput.disabled = true;
 
-    const res = await fetch("http://localhost:8080/ask", {
+    const res = await fetch("http://localhost:8000/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: combinedPrompt }),
@@ -148,6 +201,7 @@ function pushConversation(name) {
 newConvBtn.addEventListener("click", () => {
   chatWindow.innerHTML = "";
   history = []; // reset history for new conversation
+  saveHistory();
   pushConversation("New chat " + new Date().toLocaleTimeString());
   promptInput.focus();
 });

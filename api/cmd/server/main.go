@@ -45,11 +45,12 @@ func main() {
 	// Build HTTP server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ask", api.AskHandler(r))
+	mux.HandleFunc("/history", api.HistoryHandler)
 
 	handler := corsMiddleware(mux)
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":8000",
 		Handler:      handler,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 60 * time.Second,
