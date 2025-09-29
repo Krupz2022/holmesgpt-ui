@@ -3,8 +3,8 @@ package api
 
 import (
 	"encoding/json"
+	"holmesgpt-ui/api/internal/runner"
 	"net/http"
-	"ui/api/internal/runner"
 )
 
 type requestBody struct {

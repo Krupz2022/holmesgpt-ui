@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"ui/api/internal/api"
-	"ui/api/internal/runner"
+	"holmesgpt-ui/api/internal/api"
+	"holmesgpt-ui/api/internal/runner"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
