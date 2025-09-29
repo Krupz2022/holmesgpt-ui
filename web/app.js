@@ -55,7 +55,7 @@ async function sendLatestTurn() {
   };
 
   try {
-    await fetch("http://localhost:8000/history", {
+    await fetch("/history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -152,7 +152,7 @@ async function sendPrompt() {
     sendBtn.disabled = true;
     promptInput.disabled = true;
 
-    const res = await fetch("http://localhost:8000/ask", {
+    const res = await fetch("/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: combinedPrompt }),

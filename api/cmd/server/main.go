@@ -14,7 +14,7 @@ import (
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
-	allowedOrigin := "http://localhost:5500" // restrict in dev -> production: use exact origin(s)
+	allowedOrigin := "*"
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -24,7 +24,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 		// If you use credentials (cookies / auth), set this and ensure origin is not "*"
 		// w.Header().Set("Access-Control-Allow-Credentials", "true")
 
-		// Preflight requests (OPTIONS) - no body needed
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
