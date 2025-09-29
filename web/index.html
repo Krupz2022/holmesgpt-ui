@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat Ui</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">AI</div>
+        <div class="title">Chat Ui</div>
+      </div>
+
+      <nav class="nav">
+        <button class="new-conv">＋ New chat</button>
+      </nav>
+
+      <div class="conversations" id="conversations">
+      </div>
+
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="top-title">Ask anything</div>
+      </header>
+
+      <section class="chat-area">
+        <div id="chat-window" class="chat-window"></div>
+      </section>
+
+      <footer class="composer">
+        <div class="composer-inner">
+          <input id="prompt" type="text" placeholder="Type your question..." autocomplete="off" />
+          <button id="send-btn" class="send">Ask</button>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
