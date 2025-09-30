@@ -23,27 +23,27 @@ sqldb_name=$(az sql db list --resource-group $cluster_rg --server $sqlserver_nam
 
 # Patch config using yq v4
 # AKS Node Health
-yq -i '.toolsets."aks/node-health".config.cluster_name = strenv(cluster)' "$config_file"
-yq -i '.toolsets."aks/node-health".config.resource_group = strenv(cluster_rg)' "$config_file"
-yq -i '.toolsets."aks/node-health".config.subscription_id = strenv(subscription_id)' "$config_file"
+yq -i 'select(.toolsets."aks/node-health".config.cluster_name) | .toolsets."aks/node-health".config.cluster_name = "'"${cluster}"'"' "$config_file"
+yq -i 'select(.toolsets."aks/node-health".config.resource_group) | .toolsets."aks/node-health".config.resource_group = "'"${cluster_rg}"'"' "$config_file"
+yq -i 'select(.toolsets."aks/node-health".config.subscription_id) | .toolsets."aks/node-health".config.subscription_id = "'"${subscription_id}"'"' "$config_file"
 
 # AKS Core
-yq -i '.toolsets."aks/core".config.cluster_name = strenv(cluster)' "$config_file"
-yq -i '.toolsets."aks/core".config.resource_group = strenv(cluster_rg)' "$config_file"
-yq -i '.toolsets."aks/core".config.subscription_id = strenv(subscription_id)' "$config_file"
+yq -i 'select(.toolsets."aks/core".config.cluster_name) | .toolsets."aks/core".config.cluster_name = "'"${cluster}"'"' "$config_file"
+yq -i 'select(.toolsets."aks/core".config.resource_group) | .toolsets."aks/core".config.resource_group = "'"${cluster_rg}"'"' "$config_file"
+yq -i 'select(.toolsets."aks/core".config.subscription_id) | .toolsets."aks/core".config.subscription_id = "'"${subscription_id}"'"' "$config_file"
 
 # Azure SQL
-yq -i '.toolsets."azure/sql".config.tenant_id = strenv(tenant_id)' "$config_file"
-yq -i '.toolsets."azure/sql".config.client_id = strenv(client_id)' "$config_file"
-yq -i '.toolsets."azure/sql".config.client_secret = strenv(client_secret)' "$config_file"
-yq -i '.toolsets."azure/sql".config.database.subscription_id = strenv(subscription_id)' "$config_file"
-yq -i '.toolsets."azure/sql".config.database.resource_group = strenv(cluster_rg)' "$config_file"
-yq -i '.toolsets."azure/sql".config.database.server_name = strenv(sqlserver_name)' "$config_file"
-yq -i '.toolsets."azure/sql".config.database.database_name = strenv(sqldb_name)' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.tenant_id) | .toolsets."azure/sql".config.tenant_id = "'"${tenant_id}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.client_id) | .toolsets."azure/sql".config.client_id = "'"${client_id}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.client_secret) | .toolsets."azure/sql".config.client_secret = "'"${client_secret}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.database.subscription_id) | .toolsets."azure/sql".config.database.subscription_id = "'"${subscription_id}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.database.resource_group) | .toolsets."azure/sql".config.database.resource_group = "'"${cluster_rg}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.database.server_name) | .toolsets."azure/sql".config.database.server_name = "'"${sqlserver_name}"'"' "$config_file"
+yq -i 'select(.toolsets."azure/sql".config.database.database_name) | .toolsets."azure/sql".config.database.database_name = "'"${sqldb_name}"'"' "$config_file"
 
-# RabbitMQ
-yq -i '.toolsets."rabbitmq/core".config.clusters[0].user = strenv(rmq_user)' "$config_file"
-yq -i '.toolsets."rabbitmq/core".config.clusters[0].password = strenv(rmq_password)' "$config_file"
-yq -i '.toolsets."rabbitmq/core".config.clusters[0].management_url = strenv(rmq_uri)' "$config_file"
+#RabbitMQ
+yq -i '.toolsets."rabbitmq/core".config.clusters[0].username = "'"${rmq_user}"'"' "$config_file"
+yq -i '.toolsets."rabbitmq/core".config.clusters[0].password = "'"${rmq_password}"'"' "$config_file"
+yq -i '.toolsets."rabbitmq/core".config.clusters[0].management_url = "'"${rmq_uri}"'"' "$config_file"
 
 echo "[update_builtin_vars] config patched."
