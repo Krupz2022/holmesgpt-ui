@@ -28,15 +28,22 @@ git clone <repository-url>
 ### Step 3: Initialize Go 
 ```bash
 cd holmesgpt-ui
-go mod init holmesgpt-ui
 go mod tidy
 ```
-### Step 4: Run the server
+### Step 4: Run/Build the server
 ```bash
+# to run the server directly
 cd api/cmd/server
 go run .
 ```
-### To Run via Docker
+```bash
+# Build server binary
+cd api/cmd/server
+go build -o server .
+./server
+```
+### To Run via Docker [Supports only azure]
+#### To check built-in tools avaialble check config.yaml under container dir
 ```bash
 docker pull krupz/holmesgpt-ui:latest
 
