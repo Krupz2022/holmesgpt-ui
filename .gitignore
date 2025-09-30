@@ -18,6 +18,4 @@ mono_crash.*.json
 # ignore only the .env for server
 api/cmd/server/.env
 
-#ignore go.mod
 
-go.mod

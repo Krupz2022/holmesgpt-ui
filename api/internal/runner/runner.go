@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type Runner struct {
@@ -53,9 +51,6 @@ func extractAiPromptBlock(outStr string) string {
 }
 
 func (r *Runner) RunAsk(prompt string) (string, string, error) {
-	if err := godotenv.Load(); err != nil {
-		fmt.Fprintf(os.Stderr, "godotenv.Load: %v\n", err)
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), r.Timeout)
 	defer cancel()

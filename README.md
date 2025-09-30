@@ -5,7 +5,7 @@ This project provides a simple UI and backend server setup for HolmesGPT.
 # Note
 For now only tested with Azure
 
-## Set Env in .emv file under api/cmd/server
+## Set ENV in OS
 ```
 bash
 AZURE_API_VERSION="<Your azure open ai api version>"
@@ -35,4 +35,23 @@ go mod tidy
 ```bash
 cd api/cmd/server
 go run .
+```
+### To Run via Docker
+```bash
+docker pull krupz/holmesgpt-ui:latest
+
+docker run -p 80:80 -d \
+  -e AZ_CLIENT_ID="" \
+  -e AZ_CLIENT_SECRET=""  \
+  -e AZ_TENANT_ID="" \
+  -e AZ_SUBSCRIPTION_ID="" \
+  -e CLUSTER_NAME="" \
+  -e CLUSTER_RG="" \
+  -e RMQ_USER=""
+  -e RMQ_PASSWORD="" \
+  -e RMQ_URI="" \
+  -e AZURE_API_VERSION="" \
+  -e AZURE_API_BASE="" \
+  -e AZURE_API_KEY="" \
+  --name holmesgpt-ui krupz/holmesgpt-ui
 ```

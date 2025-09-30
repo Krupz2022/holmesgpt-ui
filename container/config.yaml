@@ -1,0 +1,40 @@
+toolsets:
+  aks/node-health:
+    enabled: true
+    config:
+      subscription_id: ""
+      resource_group: ""
+      cluster_name: ""
+  azure/sql:
+    enabled: true
+    config:
+      tenant_id: ""
+      client_id: ""
+      client_secret: ""
+      database:
+        subscription_id: ""
+        resource_group: ""
+        server_name: ""
+        database_name: ""
+  docker/core:
+    enabled: true
+  helm/core:
+    enabled: true
+  rabbitmq/core:
+    enabled: true
+    config:
+      clusters:
+        - id: rabbitmq
+          username: ""
+          password: ""
+          management_url: ""
+  kubernetes/core:
+    enabled: true
+  aks/core:
+    enabled: true
+    config:
+      subscription_id: ""
+      resource_group: ""
+      cluster_name: ""
+  kubernetes/logs:
+    enabled: true
