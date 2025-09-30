@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: holmesgpt
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: holmesgpt-config
+  namespace: holmesgpt
+data:
+  AZ_CLIENT_ID: ""
+  AZ_CLIENT_SECRET: ""   
+  AZ_TENANT_ID: ""
+  AZ_SUBSCRIPTION_ID: ""
+  CLUSTER_NAME: ""
+  CLUSTER_RG: ""
+  RMQ_USER: ""
+  RMQ_PASSWORD: ""
+  RMQ_URI: ""
+  AZURE_API_VERSION: ""
+  AZURE_API_BASE: ""
+  AZURE_API_KEY: "" 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: holmesgpt-ui
+  namespace: holmesgpt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: holmesgpt-ui
+  template:
+    metadata:
+      labels:
+        app: holmesgpt-ui
+    spec:
+      containers:
+        - name: holmesgpt-ui
+          image: krupz/holmesgpt-ui
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: holmesgpt-config
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 2
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: holmesgpt-ui
+  namespace: holmesgpt
+spec:
+  selector:
+    app: holmesgpt-ui
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
