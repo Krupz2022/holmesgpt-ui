@@ -51,9 +51,9 @@ func main() {
 	srv := &http.Server{
 		Addr:         ":8000",
 		Handler:      handler,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 60 * time.Second,
-		IdleTimeout:  120 * time.Second,
+		ReadTimeout:  600 * time.Second,
+		WriteTimeout: 600 * time.Second,
+		IdleTimeout:  600 * time.Second,
 	}
 
 	// Run in goroutine

@@ -52,7 +52,7 @@ func extractAiPromptBlock(outStr string) string {
 
 func (r *Runner) RunAsk(prompt string) (string, string, error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), r.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), 600*time.Minute)
 	defer cancel()
 
 	args := []string{"ask", prompt, `--model=azure/gpt-40`, "-n"}
