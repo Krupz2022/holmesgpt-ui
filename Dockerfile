@@ -16,6 +16,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl gnupg lsb-release apt-transport-https \
     bash python3 python3-pip jq \
+    unixodbc \
     nginx supervisor \
  && rm -rf /var/lib/apt/lists/*
 
@@ -67,6 +68,9 @@ COPY web/nginx.conf /etc/nginx/sites-enabled/default
 
 # Supervisor config
 COPY container/supervisord.conf /etc/supervisord.conf
+
+COPY container/odbc.sh /app/odbc.sh
+RUN chmod 755 /app/odbc.sh
 
 
 COPY container/entrypoint.sh /app/entrypoint.sh

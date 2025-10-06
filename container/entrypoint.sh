@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Building server"
+echo "[entrypoint] Installing Microsoft ODBC"
+if /app/odbc.sh; then
+  echo "[entrypoint] Installation Of ODBC drivers done."
+else
+  echo "[entrypoint] Installation Of ODBC drivers failed; continuing anyway." >&2
+fi
+
+echo "[entrypoint] Building server"
 cd /app/src
 go mod tidy
 go build -o /app/server ./api/cmd/server
