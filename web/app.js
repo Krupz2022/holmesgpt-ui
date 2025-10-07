@@ -217,3 +217,10 @@ promptInput.addEventListener("keydown", (e) => {
 // Init UI
 pushConversation("Session " + new Date().toLocaleTimeString());
 promptInput.focus();
+
+async function logOut(){
+  document.getElementById("logout-btn").addEventListener("click", function () {
+  window.location.href = "/logout";
+  });
+}
+logOut();
