@@ -7,7 +7,18 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
+
+  <div id="login" class="login-wrapper">
+    <div class="login-box">
+      <h3>Login</h3>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p id="message"></p>
+    </div>
+  </div>
+
+  <div id="mainbody" class="app hidden">
     <aside class="sidebar">
       <div class="brand">
         <div class="logo">AI</div>
@@ -36,7 +47,7 @@
         <div class="composer-inner">
           <input id="prompt" type="text" placeholder="Type your question..." autocomplete="off" />
           <button id="send-btn" class="send">Ask</button>
-          <button id="logout-btn" class="logout">Logout</button>
+          <button id="logout-btn" onclick="logOut()" class="logout">Logout</button>
         </div>
       </footer>
     </main>

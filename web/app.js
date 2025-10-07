@@ -1,19 +1,17 @@
-// app.js — keep both user and ai messages in history (up to last 6 exchanges)
-
 const chatWindow = document.getElementById("chat-window");
 const promptInput = document.getElementById("prompt");
 const sendBtn = document.getElementById("send-btn");
 const convList = document.getElementById("conversations");
 const newConvBtn = document.querySelector(".new-conv");
 
-const maxExchanges = 6; // up to 6 user+ai pairs
-const maxMessages = maxExchanges * 2; // each exchange has user + ai
-const maxChars = 4500; // guardrail for combined prompt length
+const maxExchanges = 6; 
+const maxMessages = maxExchanges * 2; 
+const maxChars = 4500; 
 
-// History: array of { role: "user"|"ai", text: string }, oldest -> newest
+
 let history = [];
 
-//getting sessionid
+
 function getSessionId() {
   let id = localStorage.getItem("sessionId");
   if (!id) {
@@ -47,7 +45,7 @@ async function sendLatestTurn() {
   const nowISO = new Date().toISOString();
   const payload = {
     sessionId,
-    turn: getTurn() + 1, // 1-based index per exchange
+    turn: getTurn() + 1, 
     messages: [
       { role: m1.role, text: m1.text, ts: nowISO },
       { role: m2.role, text: m2.text, ts: nowISO },
@@ -67,7 +65,7 @@ async function sendLatestTurn() {
   }
 }
 
-// UI helpers
+
 function addMessage(text, who) {
   const div = document.createElement("div");
   div.className = `message ${who}`;
@@ -90,31 +88,27 @@ function truncateForList(s, n = 60) {
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
 
-// Build combined prompt from history + current newPrompt.
-// Format: chronological messages (User/AI labeled), then the new User prompt as the final line.
-// Ensures total length <= maxChars by dropping oldest exchanges first.
+
 function buildCombinedPrompt(newPrompt) {
-  // clone history texts into labeled parts
+
   const parts = history.map(m => `${m.role === "user" ? "User:" : "AI:"} ${m.text}`);
 
-  // append the new prompt as the last "User:" entry
+
   parts.push(`User: ${newPrompt}`);
 
-  // join with double newline for clarity
+
   let combined = parts.join("\n\n");
 
-  // If too long, drop oldest exchange pairs (user+ai)
-  // We'll drop two messages at a time to preserve pair structure where possible.
+
   while (combined.length > maxChars && parts.length > 1) {
-    // remove the oldest two items if possible (first user and maybe ai)
-    // but to be safe remove one item first, then loop again if needed
-    parts.shift(); // remove oldest message
-    // try to keep consistent pairs by removing another if still too long
+
+    parts.shift(); 
+
     if (combined.length > maxChars && parts.length > 1) parts.shift();
     combined = parts.join("\n\n");
   }
 
-  // Final safeguard: if still too long, truncate from the front so the tail remains
+
   if (combined.length > maxChars) {
     combined = combined.slice(combined.length - maxChars);
   }
@@ -122,8 +116,7 @@ function buildCombinedPrompt(newPrompt) {
   return combined;
 }
 
-// Push a user message then later an ai message after success.
-// Ensures history length <= maxMessages by dropping oldest messages.
+
 function pushUserAndAi(userText, aiText) {
   history.push({ role: "user", text: userText });
   history.push({ role: "ai", text: aiText });
@@ -133,19 +126,19 @@ function pushUserAndAi(userText, aiText) {
   sendLatestTurn(); 
 }
 
-// Networking + UI flow
+
 async function sendPrompt() {
   const prompt = promptInput.value.trim();
   if (!prompt) return;
 
-  // show user message locally (single prompt as user typed)
+
   addMessage(prompt, "user");
   promptInput.value = "";
 
-  // build combined prompt (includes historical user+ai and this user)
+
   const combinedPrompt = buildCombinedPrompt(prompt);
 
-  // show temporary thinking indicator
+
   const loading = addMuted("Thinking…");
 
   try {
@@ -167,17 +160,17 @@ async function sendPrompt() {
 
     if (data.error) {
       addMessage("Error: " + data.error, "ai");
-      // do NOT push to history on error
+
     } else {
        
       let aiReply = data.output.trim(); 
       if (aiReply.startsWith("AI:")) {
         aiReply = aiReply.slice(3).trim();
       }
-      // show AI response
+
       addMessage(data.output, "ai");
 
-      // push both user and ai into history for future context
+
       pushUserAndAi(prompt, data.output);
 
     }
@@ -189,7 +182,7 @@ async function sendPrompt() {
   }
 }
 
-// Conversation list item helper (non-persistent)
+
 function pushConversation(name) {
   const div = document.createElement("div");
   div.className = "conv-item";
@@ -200,7 +193,7 @@ function pushConversation(name) {
 
 newConvBtn.addEventListener("click", () => {
   chatWindow.innerHTML = "";
-  history = []; // reset history for new conversation
+  history = []; 
   saveHistory();
   pushConversation("New chat " + new Date().toLocaleTimeString());
   promptInput.focus();
@@ -218,9 +211,44 @@ promptInput.addEventListener("keydown", (e) => {
 pushConversation("Session " + new Date().toLocaleTimeString());
 promptInput.focus();
 
-async function logOut(){
-  document.getElementById("logout-btn").addEventListener("click", function () {
-  window.location.href = "/logout";
-  });
+
+function hasOauthCookie() {
+  return document.cookie.split(';').some(cookie => cookie.trim().startsWith("_oauth2_proxy="));
 }
+
+function logOut() {
+  if (hasOauthCookie()) {
+    window.location.href = "/logout";
+  } else {
+    document.getElementById("mainbody").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
+  }
+}
+
 logOut();
+
+const validUser = "Admin";
+const validPass = "Pass";
+
+function login(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const msg = document.getElementById("message");
+
+  if (hasOauthCookie()) {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("mainbody").classList.remove("hidden");
+    msg.textContent = "";
+  } else {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === validUser && pass === validPass) {
+      msg.textContent = "";
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("mainbody").classList.remove("hidden");
+    } else {
+      msg.style.color = "red";
+      msg.textContent = "Invalid username or password.";
+    }
+  }
+}

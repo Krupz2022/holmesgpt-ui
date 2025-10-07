@@ -60,6 +60,50 @@ html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -app
 .send{padding:10px 16px;border-radius:999px;background:var(--accent);color:#021;border:none;cursor:pointer;min-width:78px;font-weight:600}
 .logout{padding:10px 16px;border-radius:999px;background:var(--accent);color:rgb(34, 0, 3);border:none;cursor:pointer;min-width:78px;font-weight:600}
 
+.hidden {
+  display: none;
+}
+
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-wrapper.hidden { display: none; }
+
+.login-box {
+  display: grid;
+  background: #111827; 
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  width: 320px;
+  text-align: center;
+}
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: rgb(4, 128, 66); 
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background-color: #0a0f1c; 
+  color: white;
+}
+
 /* small screens */
 @media (max-width:900px){
   .sidebar{display:none}
