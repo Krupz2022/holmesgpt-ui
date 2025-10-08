@@ -212,43 +212,44 @@ pushConversation("Session " + new Date().toLocaleTimeString());
 promptInput.focus();
 
 
-function hasOauthCookie() {
-  return document.cookie.split(';').some(cookie => cookie.trim().startsWith("_oauth2_proxy="));
-}
+const USE_OAUTH = false; 
 
 function logOut() {
-  if (hasOauthCookie()) {
-    window.location.href = "/logout";
+  if (USE_OAUTH) {
+    window.location.href = "/logout";   // proxy logout
   } else {
     document.getElementById("mainbody").classList.add("hidden");
     document.getElementById("login").classList.remove("hidden");
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
   }
 }
 
-logOut();
-
 const validUser = "Admin";
 const validPass = "Pass";
+
+function check_oauth() {
+  if (USE_OAUTH) {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("mainbody").classList.remove("hidden");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", check_oauth);
 
 function login(e) {
   if (e && e.preventDefault) e.preventDefault();
   const msg = document.getElementById("message");
 
-  if (hasOauthCookie()) {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+
+  if (user === validUser && pass === validPass) {
+    msg.textContent = "";
     document.getElementById("login").classList.add("hidden");
     document.getElementById("mainbody").classList.remove("hidden");
-    msg.textContent = "";
   } else {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-
-    if (user === validUser && pass === validPass) {
-      msg.textContent = "";
-      document.getElementById("login").classList.add("hidden");
-      document.getElementById("mainbody").classList.remove("hidden");
-    } else {
-      msg.style.color = "red";
-      msg.textContent = "Invalid username or password.";
-    }
+    msg.style.color = "red";
+    msg.textContent = "Invalid username or password.";
   }
 }

@@ -69,8 +69,11 @@ COPY web/nginx.conf /etc/nginx/sites-enabled/default
 # Supervisor config
 COPY container/supervisord.conf /etc/supervisord.conf
 
-COPY container/odbc.sh /app/odbc.sh
+COPY container/set_auth.sh /app/odbc.sh
 RUN chmod 755 /app/odbc.sh
+
+COPY container/odbc.sh /app/set_auth.sh
+RUN chmod 755 /app/set_auth.sh
 
 
 COPY container/entrypoint.sh /app/entrypoint.sh

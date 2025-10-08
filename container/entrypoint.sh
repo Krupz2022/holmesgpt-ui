@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "[entrypoint] Setting auth "
+if /app/set_auth.sh; then
+  echo "[entrypoint] Auth settings done."
+else
+  echo "[entrypoint] Auth settings failed; continuing anyway." >&2
+fi
+
+
 echo "[entrypoint] Installing Microsoft ODBC"
 if /app/odbc.sh; then
   echo "[entrypoint] Installation Of ODBC drivers done."
